@@ -26,7 +26,7 @@
 
 ## 项目架构
 
-```
+```text
 mind_note/
 ├── main.py                  # 应用入口（待开发）
 ├── config.json              # 全局配置文件

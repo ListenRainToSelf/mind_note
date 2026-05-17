@@ -214,6 +214,67 @@ class network_API:
             return {'state':True,'msg':'笔记创建成功'}
         else:
             return {'state':False,'msg':'笔记创建失败'}
+    #delete_note
+    @staticmethod
+    def delete_note(username,password,note_name):
+        if not note_name:
+            return {'state':False,'msg':'笔记名称不能为空'}
+        if network_API.login(username,password)['state']:
+            # 删除笔记目录
+            note_dir: str = os.path.join(DIR,username,note_name)
+            file_server.delete_dir(note_dir)
+            return {'state':True,'msg':'笔记删除成功'}
+        else:
+            return {'state':False,'msg':'笔记删除失败'}
+    #write_note
+    @staticmethod
+    def write_note(username,password,note_name,content):
+        if not note_name:
+            return {'state':False,'msg':'笔记名称不能为空'}
+        if not content:
+            return {'state':False,'msg':'笔记内容不能为空'}
+        if network_API.login(username,password)['state']:
+            # 写入笔记内容
+            note_dir: str = os.path.join(DIR,username,note_name)
+            file_server.write_file(os.path.join(note_dir,'note.md'),content)
+            return {'state':True,'msg':'笔记写入成功'}
+        else:
+            return {'state':False,'msg':'笔记写入失败'}
+    #read_note
+    @staticmethod
+    def read_note(username,password,note_name):
+        if not note_name:
+            return {'state':False,'msg':'笔记名称不能为空'}
+        if network_API.login(username,password)['state']:
+            # 读取笔记内容
+            note_dir: str = os.path.join(DIR,username,note_name)
+            content: str = file_server.read_file(os.path.join(note_dir,'note.md'))
+            return {'state':True,'msg':content}
+        else:
+            return {'state':False,'msg':'笔记读取失败'}
+    #create_dir
+    @staticmethod
+    def create_dir(username,password,dir_path):
+        if not network_API.login(username,password)['state']:
+            return {'state':False,'msg':'登录失败'}
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+            return {'state':True,'msg':'目录创建成功'}
+        else:
+            return {'state':False,'msg':'目录已存在'}
+    #delete_dir
+    @staticmethod
+    def delete_dir(username,password,dir_path):
+        if not network_API.login(username,password)['state']:
+            return {'state':False,'msg':'登录失败'}
+        if os.path.exists(dir_path):
+            try:
+                os.rmdir(dir_path)
+                return {'state':True,'msg':'目录删除成功'}
+            except Exception as e:
+                return {'state':False,'msg':f'目录删除失败：{e}'}
+        else:
+            return {'state':False,'msg':'目录不存在'}
 
 
 # ============================================================
@@ -223,7 +284,78 @@ class network_API:
 # 当前为空实现，等待具体需求时补充。
 # ============================================================
 class local_API:
-    pass
+    #staticmethod
+    @staticmethod
+    def create_note(note_name):
+        if not note_name:
+            return {'state':False,'msg':'笔记名称不能为空'}
+        if not os.path.exists(os.path.join(DIR,note_name)):
+            os.makedirs(os.path.join(DIR,note_name))
+            return {'state':True,'msg':'笔记创建成功'}
+        elif os.path.exists(os.path.join(DIR,note_name)):
+            return {'state':False,'msg':'笔记已存在'}
+        else:
+            return {'state':False,'msg':'笔记创建失败'}
+    #delete_note
+    @staticmethod
+    def delete_note(note_name):
+        if not note_name:
+            return {'state':False,'msg':'笔记名称不能为空'}
+        if os.path.exists(os.path.join(DIR,note_name)):
+            try:
+                os.rmdir(os.path.join(DIR,note_name))
+                return {'state':True,'msg':'笔记删除成功'}
+            except Exception as e:
+                return {'state':False,'msg':f'笔记删除失败：{e}'}
+        else:
+            return {'state':False,'msg':'笔记不存在'}
+    #write_note
+    @staticmethod
+    def write_note(note_name,content):
+        if not note_name:
+            return {'state':False,'msg':'笔记名称不能为空'}
+        if not content:
+            return {'state':False,'msg':'笔记内容不能为空'}
+        if os.path.exists(os.path.join(DIR,note_name)):
+            file_server.write_file(os.path.join(DIR,note_name,'note.md'),content)
+            return {'state':True,'msg':'笔记写入成功'}
+        else:
+            return {'state':False,'msg':'笔记不存在'}
+    #read_note
+    @staticmethod
+    def read_note(note_name):
+        if not note_name:
+            return {'state':False,'msg':'笔记名称不能为空'}
+        if os.path.exists(os.path.join(DIR,note_name)):
+            content: str = file_server.read_file(os.path.join(DIR,note_name,'note.md'))
+            return {'state':True,'msg':content}
+        else:
+            return {'state':False,'msg':'笔记不存在'}
+    #create_dir
+    @staticmethod
+    def create_dir(dir_path):
+        if not dir_path:
+            return {'state':False,'msg':'目录路径不能为空'}
+        if not os.path.exists(dir_path):
+            os.makedirs(dir_path)
+            return {'state':True,'msg':'目录创建成功'}
+        elif os.path.exists(dir_path):
+            return {'state':False,'msg':'目录已存在'}
+        else:
+            return {'state':False,'msg':'目录创建失败'}
+    #delete_dir
+    @staticmethod
+    def delete_dir(dir_path):
+        if not dir_path:
+            return {'state':False,'msg':'目录路径不能为空'}
+        if os.path.exists(dir_path):
+            try:
+                os.rmdir(dir_path)
+                return {'state':True,'msg':'目录删除成功'}
+            except Exception as e:
+                return {'state':False,'msg':f'目录删除失败：{e}'}
+        else:
+            return {'state':False,'msg':'目录不存在'}
 
 
 # ============================================================

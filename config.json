@@ -1,0 +1,22 @@
+{
+    "network_serve": true,
+    "file_server_config":{
+        "dir": "DATA",
+        "port": 5000,
+        "file_tree":{
+            "local_init_path":{
+                ".mind_note": [
+                    "file_tree.json",
+                    {
+                        "change_log": []
+                    }
+                ]
+            },
+            "network_init_path":{
+                ".users": [
+                    "users.json"
+                ]
+            }
+        }
+    }
+}
